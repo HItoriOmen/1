@@ -1,4 +1,36 @@
-local player = game.Players.LocalPlayer
-local char = player.Character
-local humanoid = char:WaitForChild("Humanoid")
-humanoid.WalkSpeed = 100
+local Char  = Players.LocalPlayer.Character
+	local touched = false
+	local tpdback = false
+	local box = Instance.new('Part')
+	box.Anchored = true
+	box.CanCollide = true
+	box.Size = Vector3.new(10,1,10)
+	box.Position = Vector3.new(0,10000,0)
+	box.Parent = workspace
+	local boxTouched = box.Touched:connect(function(part)
+		if (part.Parent.Name == Players.LocalPlayer.Name) then
+			if touched == false then
+				touched = true
+				local function apply()
+					local no = Char.HumanoidRootPart:Clone()
+					wait(.25)
+					Char.HumanoidRootPart:Destroy()
+					no.Parent = Char
+					Char:MoveTo(loc)
+					touched = false
+				end
+				if Char then
+					apply()
+				end
+			end
+		end
+	end)
+	repeat wait() until Char
+	local cleanUp
+	cleanUp = Players.LocalPlayer.CharacterAdded:connect(function(char)
+		boxTouched:Disconnect()
+		box:Destroy()
+		cleanUp:Disconnect()
+	end)
+	loc = Char.HumanoidRootPart.Position
+	Char:MoveTo(box.Position + Vector3.new(0,.5,0))
